@@ -1,0 +1,28 @@
+name: rye-dj  # 工作流程名称
+on: push  # 触发条件 push触发
+jobs:
+    build:  # 任务名称
+        runs-on: window-latest  # 运行环境
+        steps:
+        - name: 读取仓库代码
+          uses: actions/checkout@v4
+
+        - name: 安装rye
+          uses: eifinger/setup-rye@v4
+          with:
+            enable-cache: true
+            version: 'latest'
+
+        - name: 安装依赖
+          run: rye sync
+
+        - name: 打包
+          run: |
+            cd src/rye_dj
+            rye run build
+
+        - name: 上传
+          uses: actions/upload-artifact@v4
+          with:
+            name: dist
+            path: src/rye_dj/dist/manage.exe
